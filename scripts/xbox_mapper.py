@@ -145,8 +145,8 @@ MAX_VEL_FLIPPER = rospy.get_param('/rr_xbox_mapper_node/max_vel_flipper', 1.4)
 DRIVE_THROTTLE = rospy.get_param('/rr_xbox_mapper_node/default_drive_throttle', 0.15)
 FLIPPER_THROTTLE = rospy.get_param('/rr_xbox_mapper_node/default_flipper_throttle', 0.6)
 ADJ_THROTTLE = rospy.get_param('~adjustable_throttle', True)
-DRIVE_INCREMENTS = rospy.get_param('/rr_xbox_mapper_node/drive_increment', 20.0) 
-FLIPPER_INCREMENTS = rospy.get_param('/rr_xbox_mapper_node/flipper_increment', 20.0)
+DRIVE_INCREMENTS = float(rospy.get_param('/rr_xbox_mapper_node/drive_increment', 20.0))
+FLIPPER_INCREMENTS = (rospy.get_param('/rr_xbox_mapper_node/flipper_increment', 20.0))
 
 DEADBAND = 0.2
 FWD_ACC_LIM = 0.2 
