@@ -114,10 +114,10 @@ elif wired_or_wireless == "wireless" and driver =="xboxdrv":
     rospy.logwarn("XBOX CONFIG: wireless & xboxdrv")
     L_STICK_H_AXES = 0
     L_STICK_V_AXES = 1
-    L_TRIG_AXES = 5
-    R_STICK_H_AXES = 2 
-    R_STICK_V_AXES = 3
-    R_TRIG_AXES = 4
+    L_TRIG_AXES = 2
+    R_STICK_H_AXES = 3 
+    R_STICK_V_AXES = 4
+    R_TRIG_AXES = 5
     DPAD_H_AXES = 6
     DPAD_V_AXES = 7
 
@@ -139,14 +139,15 @@ prev_trn = 0
 PREV_CMD_TIME = 0
 PREV_SEQ_NUM = 0
 
-MAX_VEL_FWD = rospy.get_param('~max_vel_drive', 2.6)
-MAX_VEL_TURN = rospy.get_param('~max_vel_turn', 9.0)
-MAX_VEL_FLIPPER = rospy.get_param('~max_vel_flipper', 1.4)
-DRIVE_THROTTLE = rospy.get_param('~default_drive_throttle', 0.15)
-FLIPPER_THROTTLE = rospy.get_param('~default_flipper_throttle', 0.6)
+MAX_VEL_FWD = rospy.get_param('/rr_xbox_mapper_node/max_vel_drive', 2.6)
+MAX_VEL_TURN = rospy.get_param('/rr_xbox_mapper_node/max_vel_turn', 9.0)
+MAX_VEL_FLIPPER = rospy.get_param('/rr_xbox_mapper_node/max_vel_flipper', 1.4)
+DRIVE_THROTTLE = rospy.get_param('/rr_xbox_mapper_node/default_drive_throttle', 0.15)
+FLIPPER_THROTTLE = rospy.get_param('/rr_xbox_mapper_node/default_flipper_throttle', 0.6)
 ADJ_THROTTLE = rospy.get_param('~adjustable_throttle', True)
-DRIVE_INCREMENTS = float(20) 
-FLIPPER_INCREMENTS = float(20) 
+DRIVE_INCREMENTS = rospy.get_param('/rr_xbox_mapper_node/drive_increment', 20.0) 
+FLIPPER_INCREMENTS = rospy.get_param('/rr_xbox_mapper_node/flipper_increment', 20.0)
+
 DEADBAND = 0.2
 FWD_ACC_LIM = 0.2 
 TRN_ACC_LIM = 0.4 
@@ -277,10 +278,10 @@ def joy_cb(Joy):
 
         if Joy.buttons[LB_BUTTON] == 1:
                 FLIPPER_THROTTLE -= (1 / FLIPPER_INCREMENTS)
-                rospy.loginfo(FLIPPER_THROTTLE)
+                rospy.loginfo("Flipper Throttle: %f", FLIPPER_THROTTLE)
         if Joy.buttons[RB_BUTTON] == 1:
                 FLIPPER_THROTTLE += (1 / FLIPPER_INCREMENTS)
-                rospy.loginfo(FLIPPER_THROTTLE)
+                rospy.loginfo("Flipper Throttle: %f", FLIPPER_THROTTLE)
         
         # If the user tries to decrease full throttle to 0
         # Then set it back up to 0.2 m/s
@@ -313,7 +314,8 @@ def joy_cb(Joy):
         drive_cmd = 0 
         
     # Turn left/right commands
-    turn_cmd = (1.1-(drive_cmd/MAX_VEL_FWD)) * DRIVE_THROTTLE * MAX_VEL_TURN * Joy.axes[R_STICK_H_AXES]  #right joystick
+    # turn_cmd = (1.1-(drive_cmd/MAX_VEL_FWD)) * DRIVE_THROTTLE * MAX_VEL_TURN * Joy.axes[R_STICK_H_AXES]  #right joystick
+    turn_cmd = DRIVE_THROTTLE * MAX_VEL_TURN * Joy.axes[R_STICK_H_AXES]  #right joystick
     if turn_cmd < TURN_DEADBAND and -TURN_DEADBAND < turn_cmd:
         turn_cmd = 0
 
