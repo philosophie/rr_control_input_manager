@@ -353,7 +353,7 @@ def joystick_main():
 
     while not rospy.is_shutdown():
         # Subscribe to the joystick topic
-        sub_cmds = rospy.Subscriber("joystick", Joy, joy_cb)
+        rospy.Subscriber("joystick", Joy, joy_cb)
         
         # spin() simply keeps python from exiting until this node is stopped
         rospy.spin()
