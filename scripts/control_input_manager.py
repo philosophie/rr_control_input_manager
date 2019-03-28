@@ -25,6 +25,7 @@ class CmdVelManager(object):
     fleet_manager_control_input_request = Twist()
     joy_control_input_request = TwistStamped()
     managed_control_input = TwistStamped()
+    last_managed_control_input = TwistStamped()
     seq = 0
     def __init__(self):
 
@@ -104,7 +105,11 @@ class CmdVelManager(object):
             my_managed_control_input.twist.angular.y=0
             my_managed_control_input.twist.angular.z=0
             rospy.logwarn_throttle(60, "[CONTROL_INPUT_MANAGER_NODE] Soft Estop is still enabled which will prevent any motion")
-        self.managed_pub.publish(my_managed_control_input)
+
+        if (my_managed_control_input.twist.linear.x, my_managed_control_input.twist.angular.y, my_managed_control_input.twist.angular.z, self.last_managed_control_input.twist.linear.x, self.last_managed_control_input.twist.angular.y, self.last_managed_control_input.twist.angular.z) != (0,0,0,0,0,0):
+            self.managed_pub.publish(my_managed_control_input)
+
+        self.last_managed_control_input = my_managed_control_input
 
         self.seq += 1
 
